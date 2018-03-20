@@ -181,7 +181,7 @@ var PetSchema = new Schema({
 
 // Override all methods
 PetSchema.plugin(mongoose_delete, { overrideMethods: 'all' });
-// or 
+// or
 PetSchema.plugin(mongoose_delete, { overrideMethods: true });
 
 // Overide only specific methods
@@ -208,6 +208,18 @@ Pet.findWithDeleted(function (err, documents) {
   // will return ALL documents
 });
 
+```
+
+### Populate deleted documents if overrideMethods is distribute
+
+We have the options `withDeleteded` that can be pass to the populate() function.
+
+```
+Pet.find({})
+  .populate({ path: 'country', options: { withDeleted: true } })
+  .exec(function (err, documents) {
+  // will also return DELETED country documents
+});
 ```
 
 ### Disable model validation on delete
@@ -243,13 +255,14 @@ var PetSchema = new Schema({
 
 // Index all field related to plugin (deleted, deletedAt, deletedBy)
 PetSchema.plugin(mongoose_delete, { indexFields: 'all' });
-// or 
+// or
 PetSchema.plugin(mongoose_delete, { indexFields: true });
 
 // Index only specific fields
 PetSchema.plugin(mongoose_delete, { indexFields: ['deleted', 'deletedBy'] });
 // or
 PetSchema.plugin(mongoose_delete, { indexFields: ['deletedAt'] });
+
 
 
 ```

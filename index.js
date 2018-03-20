@@ -123,7 +123,15 @@ module.exports = function (schema, options) {
         finalList.forEach(function(method) {
             if (method === 'count' || method === 'find' || method === 'findOne') {
                 schema.statics[method] = function () {
-                    return Model[method].apply(this, arguments).where('deleted').ne(true);
+                  const query = Model[method].apply(this, arguments)
+                  if (arguments[2]) {
+                    if (arguments[2].withDeleted !== true) {
+                      query.where('deleted').ne(true);
+                    }
+                  } else {
+                    query.where('deleted').ne(true);
+                  }
+                  return query;
                 };
                 schema.statics[method + 'Deleted'] = function () {
                     return Model[method].apply(this, arguments).where('deleted').ne(false);
